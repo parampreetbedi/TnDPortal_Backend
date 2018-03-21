@@ -5,7 +5,7 @@ var TrainedEmployee =  require('../controllers/trainedEmployee')
 
 /* GET trainedemployee listing. */
 router.get('/:all', TrainedEmployee.fetch);
-//router.put('/:all',Attendance.update)
+router.put('/:all',TrainedEmployee.update)
 router.post('/', TrainedEmployee.save);
 
 module.exports = router;
