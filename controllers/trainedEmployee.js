@@ -43,8 +43,7 @@ exports.addRatingFeedback = function (req, res) {
 
 exports.fetch = function (req, res) {
 	if (req.params.all == 'all') {
-		TrainedEmployee.find()/*.populate('trainee', 'name').populate('plan', 'tech')*/.exec(function (err, trainedEmp) {
-			console.log(trainedEmp);
+		TrainedEmployee.find().populate('trainee', 'name').populate('plan', 'tech').exec(function (err, trainedEmp) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
@@ -52,7 +51,7 @@ exports.fetch = function (req, res) {
 			}
 		})
 	} else if (req.params.all) {
-		Technology.findOne({ _id: req.params.all })/*.populate('trainee', 'name').populate('plan', 'tech')*/.exec(function (err, trainedEmp) {
+		Technology.findOne({ _id: req.params.all }).populate('trainee', 'name').populate('plan', 'tech').exec(function (err, trainedEmp) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
