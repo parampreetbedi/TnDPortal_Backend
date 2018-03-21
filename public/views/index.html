@@ -1,0 +1,284 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Training and Development Chat</title>
+    <style>
+       * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     outline: none !important;
+}
+ body {
+     font-size: 13px; 
+     background: #ffffd6;
+     font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+}
+ #abc {
+     background: #dcdcc1;
+     padding: 7px;
+     position: fixed;
+     bottom: 0;
+     width: 100%;
+}
+ #abc input {
+     border: 0;
+     padding: 10px;
+     width: 90%;
+     margin-right: .5%;
+     height: 40px;
+}
+ #abc button {
+      width: 9%;
+      border: none;
+      padding: 10px;
+      background: #f49e32;
+      cursor: pointer;
+      font-size: 15px;
+      height: 40px;
+}
+ #messages {
+     list-style-type: none;
+     margin: 0;
+     padding: 0;
+     display: table;
+    width: 100%;
+}
+ #messages li {
+    padding: 5px 10px;
+    display: table;
+    width: 100%;
+}
+#messages li:after {
+    content: '';
+    clear: both;
+}
+ #messages {
+     margin-bottom: 100px 
+}
+ div.quickReplies {
+    padding-top: 5px;
+    display: none;
+    padding-bottom: 5px;
+    border-top: 1px solid #000;
+    width: 100%;
+    position: fixed;
+    bottom: 51px;
+    background: #ffffd6;
+}
+form#bce {
+    padding: 15px;
+}
+ div.quickReplies div.button{
+    border-radius: 5px;
+    padding: 9px 12px;
+    cursor: pointer;
+    float: none;
+    margin-left: 15px;
+    background: #f49e32;
+    display: inline-block;
+    font-size: 13px;
+}
+ div.to {
+    max-width: 50%;
+    clear: both;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    background: #facc86;
+    padding: 10px;
+    margin-left: 10px;
+}
+ div.from {
+    max-width: 50%;
+    clear: both;
+    float: right;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding: 10px;
+    margin-right: 10px;
+    background: #a3d6fc;
+}
+ .chatEnded{
+     text-align:center;
+     height:20px;
+     width:100%;
+     display:none;
+}
+ .overlay{
+    position: fixed;
+    width: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background: #dcdcc1;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.19);
+    -moz-box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.19);
+    box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.19);
+}
+ .overlay div:not(:last-child) {
+    margin-bottom: 20px;
+}
+ .overlay input{
+    border-radius: 5px;
+    padding: 5px 12px;
+    width: 100%;
+    border: 0;
+    height: 35px;
+}
+.overlay input[type="submit"] {
+    background: #f49e32;
+    cursor: pointer;
+    font-size: 17px;
+}
+ .overlayBack{
+    display: none;
+    position: absolute;
+    background: #fbf8cd;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+}
+ .width170{
+     width:190px;
+}
+    </style>
+  </head>
+  <body>
+  
+  <div class="overlayBack">
+    <div class="overlay">
+      <form id="bce">
+        <div><input type="text" placeholder="Name" class="width170" name="name" id="name" /></div>
+        <div><input type="email" placeholder="Email" name="email" class="width170" id="email" /></div>
+        <div><input type="submit" value="Submit" /></div>
+      </form>
+    </div>
+  </div>
+  
+  
+    <div class="chat">
+    <ul id="messages">
+    </ul>
+    </div>
+    <div class="chatEnded">ChatBot Ended, connecting to HR</div>
+    <div class="quickReplies">
+    </div>    
+    <form action="" id="abc">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        if(!localStorage.user){
+          $('.overlayBack').show()
+        }
+        $('#bce').submit(function(){
+          
+          $.ajax({
+            url: "/employee/login",
+            method: "POST",
+            data:{name:$('#name').val(), email:$('#email').val()}
+          }).done(function(data) {
+            localStorage.user = JSON.stringify(data);
+            $('#messages').append($('<li>').append($('<div class="to">').html("Hello "+data.name)));
+            $('.overlayBack').hide()
+          });
+
+          
+          return false;
+        });
+        var botStatus=0;
+        
+        var myName='';
+        /*socket.on('connect', function(){
+          // call the server-side function 'adduser' and send one parameter (value of prompt)
+          var val = prompt("What's your name?");
+          if(val.indexOf(':')==-1){
+            socket.emit('adduser', val);            
+            myName=val;
+            $('#messages').append($('<li>').append($('<div class="to">').text('Hello '+myName)));
+          }
+          else{
+            //$("#user").show();
+            socket.emit('adduser', val, true);
+            myName=val.split(':')[0]; 
+            //socket.emit('show rooms');           
+          }
+
+        });*/
+
+        localStorage.context='';
+        localStorage.intent='';
+        $('#abc').submit(function(){
+          if($('#m').val()){
+            $.ajax({
+              url: "/",
+              method: "POST",
+              data:{
+                msg:$('#m').val(), 
+                user:JSON.parse(localStorage.user)._id, 
+                context:localStorage.context,
+                intent:localStorage.intent
+              }
+            }).done(function(data) {
+              localStorage.intent=data.intent;
+              $('#messages').append($('<li>').append($('<div class="to">').html(data.msg)));
+              if(data.quickreplies){
+                $('.quickReplies').html('');
+                $('.quickReplies').show();
+                for(var i=0; i<data.quickreplies.length; i++){
+                    $('.quickReplies').append('<div class="button" onclick="postReply(\''+data.quickreplies[i]+'\')">'+data.quickreplies[i]+'</div>')
+                }
+              }
+            });
+
+            //socket.emit('bot message', $('#m').val(), true);
+            $('#messages').append($('<li>').append($('<div class="from">').html($('#m').val())));
+            
+            $('#m').val('');
+            $('.quickReplies').hide();
+          }
+          
+          return false;
+        });
+        
+        /*socket.on('bot message', function(msg, username){
+          if(typeof msg == 'object'){
+            if(msg.text){
+              $('#messages').append($('<li>').append($('<div class="to">').text(msg.text)));
+              if(msg.quickreplies){
+                $('.quickReplies').html('');
+                $('.quickReplies').show();
+                for(var i=0; i<msg.quickreplies.length; i++){
+                    $('.quickReplies').append('<div class="button" onclick="postReply(\''+msg.quickreplies[i]+'\')">'+msg.quickreplies[i]+'</div>')
+                }
+              }
+            }else{
+              $('.chatEnded').show();  
+            }              
+          }
+          else{
+            if(username!=myName)
+              $('#messages').append($('<li>').append($('<div class="to">').text(msg)));
+          }
+          
+        });
+        socket.on('updaterooms', function(rooms) {
+          $('#rooms').empty();
+          $.each(rooms, function(key, value) {
+            $('#rooms').append('<div><a href="#" onclick="switchRoom(\''+value+'\')">' + value + '</a></div>');           
+          });
+        });*/
+      });
+      function postReply(val){
+        $('#m').val(val);
+        $('#abc').submit();
+      }
+    </script>
+  </body>
+</html>
