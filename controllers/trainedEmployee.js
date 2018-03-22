@@ -1,4 +1,5 @@
 var TrainedEmployee = require('../models/trainedEmployee');
+var Technology = require('../models/technology');
 
 exports.save = function (req, res) {
 
@@ -51,11 +52,14 @@ exports.fetch = function (req, res) {
 			}
 		})
 	} else if (req.params.all) {
-		Technology.findOne({ _id: req.params.all }).populate('trainee', 'name').populate('plan', 'tech').exec(function (err, trainedEmp) {
+		TrainedEmployee.findOne({ _id: req.params.all }).populate('trainee', 'name').populate('plan', 'tech').exec(function (err, trainedEmp) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
-				res.status(200).jsonp(trainedEmp)
+				//Technology.findOne({_id: trainedEmp.plan.tech}).exec(function (err, obj){
+					//trainedEmp.plan.tech = obj.name;
+					res.status(200).jsonp(trainedEmp)	
+				//})
 			}
 		})
 	} else {
@@ -65,6 +69,25 @@ exports.fetch = function (req, res) {
 
 exports.update = function (req, res) {
 	TrainedEmployee.findOne({ _id: req.params.all }).exec((err, trainedEmp) => {
-
+		//console.log(req.body);
+		if(req.body.trainingCompleted && req.body.plan && req.body.trainee){
+			trainedEmp.trainingCompleted = req.body.trainingCompleted;
+			trainedEmp.plan = req.body.plan;
+			trainedEmp.trainee = req.body.trainee;
+			trainedEmp.save((err) => {
+				if(!err){
+					if(req.isDeleted){
+						res.status(200).jsonp({"msg":"Plan deleted"});
+					}else{
+						res.status(200).jsonp({"msg":"Plan updated"});	
+					}						
+				}else{
+					res.status(404).jsonp(err);
+				}
+			})
+		}
+		else{
+			res.status(404).jsonp({msg:"trainingCompleted, plan or trainee, either is required input"})
+		}
 	})
 }
