@@ -100,7 +100,7 @@ exports.fetch = function(req, res){
 			}
 		})
 	}else if(req.params.all=='ongoing'){
-		Plan.find({isDeleted:{$ne:1}, isCompleted:0, startDate:{$lte:Date.now()}}).populate('trainer tech','name').exec(function(err, plan){
+		Plan.find({isDeleted:{$ne:1}, isCompleted:0 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
 			if(err){
 				res.status(404).jsonp(err)
 			}else{
@@ -108,7 +108,7 @@ exports.fetch = function(req, res){
 			}
 		})
 	}else if(req.params.all=='completed'){
-		Plan.find({isDeleted:{$ne:1}, isCompleted:1, startDate:{$lte:Date.now()}}).populate('trainer tech','name').exec(function(err, plan){
+		Plan.find({isDeleted:{$ne:1}, isCompleted:1 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
 			if(err){
 				res.status(404).jsonp(err)
 			}else{
@@ -116,7 +116,7 @@ exports.fetch = function(req, res){
 			}
 		})
 	}else if(req.params.all=='upcoming'){
-		Plan.find({isDeleted:{$ne:1}, isCompleted:0, startDate:{$gt:Date.now()}}).populate('trainer tech','name').exec(function(err, plan){
+		Plan.find({isDeleted:{$ne:1}, isCompleted:2 /*, startDate:{$gt:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
 			if(err){
 				res.status(404).jsonp(err)
 			}else{
