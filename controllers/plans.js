@@ -60,7 +60,10 @@ exports.update = function(req, res){
 					plan.startDate = startDate.getTime();
 				}
 				if(req.body.trainer){
-					plan.trainer = req.body.trainer
+					plan.trainer = req.body.trainer;
+				}
+				if(req.body.type){
+					plan.type = req.body.type;
 				}
 				// if(req.body.trainee){                    //trainee data must be separately updated
 				// 	plan.trainee = req.body.trainee
@@ -92,15 +95,25 @@ exports.update = function(req, res){
 
 exports.fetch = function(req, res){
 	if(req.params.all=='all'){
-		Plan.find({isDeleted:{$ne:1}}).populate('trainer tech','name').exec(function(err, plan){
+		Plan.find({isDeleted:{$ne:1}/*, type:1*/}).populate('trainer tech','name').exec(function(err, plan){
 			if(err){
 				res.status(404).jsonp(err)	//trainer trainee tech
 			}else{
 				res.status(200).jsonp(plan)
 			}
 		})
-	}else if(req.params.all=='ongoing'){
-		Plan.find({isDeleted:{$ne:1}, isCompleted:0 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
+	}
+	else if(req.params.all=='need'){
+		Plan.find({isDeleted:{$ne:1}, type:0 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
+			if(err){
+				res.status(404).jsonp(err)
+			}else{
+				res.status(200).jsonp(plan)
+			}
+		})
+	}
+	else if(req.params.all=='ongoing'){
+		Plan.find({isDeleted:{$ne:1}, type:1, isCompleted:0 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
 			if(err){
 				res.status(404).jsonp(err)
 			}else{
@@ -108,7 +121,7 @@ exports.fetch = function(req, res){
 			}
 		})
 	}else if(req.params.all=='completed'){
-		Plan.find({isDeleted:{$ne:1}, isCompleted:1 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
+		Plan.find({isDeleted:{$ne:1}, type:1, isCompleted:1 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
 			if(err){
 				res.status(404).jsonp(err)
 			}else{
@@ -116,7 +129,7 @@ exports.fetch = function(req, res){
 			}
 		})
 	}else if(req.params.all=='upcoming'){
-		Plan.find({isDeleted:{$ne:1}, isCompleted:2 /*, startDate:{$gt:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
+		Plan.find({isDeleted:{$ne:1}, type:1, isCompleted:2 /*, startDate:{$gt:Date.now()}*/ }).populate('trainer tech','name').exec(function(err, plan){
 			if(err){
 				res.status(404).jsonp(err)
 			}else{
@@ -134,4 +147,18 @@ exports.fetch = function(req, res){
 	}else{
 		res.status(404).jsonp({msg:"a parameter is required"})
 	}
+}
+
+exports.enroll = function(req, res) {
+	Plan.findOne({_id:req.params.id}).exec(function(err,plan){
+		plan.type=1;
+		plan.save(function(err){
+			if(!err){				
+				res.status(200).jsonp({"msg":"Plan updated"});									
+			}else{
+				console.log(err);
+				res.status(404).jsonp(err);
+			}
+		})
+	})
 }

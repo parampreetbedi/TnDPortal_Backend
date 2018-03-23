@@ -70,10 +70,16 @@ exports.fetch = function (req, res) {
 exports.update = function (req, res) {
 	TrainedEmployee.findOne({ _id: req.params.all }).exec((err, trainedEmp) => {
 		//console.log(req.body);
-		if(req.body.trainingCompleted && req.body.plan && req.body.trainee){
+		if((req.body.trainingCompleted==0 || req.body.trainingCompleted==1 || req.body.trainingCompleted==2) && req.body.plan && req.body.trainee){
 			trainedEmp.trainingCompleted = req.body.trainingCompleted;
 			trainedEmp.plan = req.body.plan;
 			trainedEmp.trainee = req.body.trainee;
+			if(req.body.starRating){
+			  trainedEmp.starRating = req.body.starRating;	
+			}
+			if(req.body.feedback){
+				trainedEmp.feedback = req.body.feedback;	
+			}
 			trainedEmp.save((err) => {
 				if(!err){
 					if(req.isDeleted){
@@ -87,7 +93,7 @@ exports.update = function (req, res) {
 			})
 		}
 		else{
-			res.status(404).jsonp({msg:"trainingCompleted, plan or trainee, either is required input"})
+			res.status(404).jsonp({msg:"trainingCompleted, plan or trainee, either is required input "+JSON.stringify(req.body)})
 		}
 	})
 }
