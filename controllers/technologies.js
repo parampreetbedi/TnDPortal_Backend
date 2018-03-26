@@ -1,7 +1,7 @@
 var Technology = require('../models/technology');
 
 exports.save = function(req, res){
-	console.log("rassdfasdf",req.body);
+	//console.log("rassdfasdf",req.body);
 	if(req.body.name && (req.body.targetAudience == 0 || req.body.targetAudience ==1) && req.body.topics){
 		var tech = {
 			name:req.body.name,

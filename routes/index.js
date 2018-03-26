@@ -182,7 +182,7 @@ router.post('/', function(req,res,next){
 				            "parameters":{ "upcomingtrainings": upcomingtrainings, "uct": uct},
 				            "lifespan":4
 				        }];
-				        console.log("context",context);
+				        //console.log("context",context);
 				        callapiai(req.body.msg, {sessionId:req.body.user,contexts:context},req,res)
 					}else{
 						callapiai(req.body.msg, {sessionId:req.body.user},req,res)
@@ -209,10 +209,10 @@ function callapiai(msg, body, req, res){
 	}
 	
 	request.on('response', function(response) {
-		console.log("response.result.contexts",response.result.fulfillment.messages)
+		//console.log("response.result.contexts",response.result.fulfillment.messages)
 		if(response.result.fulfillment.messages.length){
 			if(response.result.fulfillment.messages[0].payload){
-				console.log("response.result.fulfillment.messages[0].payload",response.result.fulfillment.messages[0].payload)
+				//console.log("response.result.fulfillment.messages[0].payload",response.result.fulfillment.messages[0].payload)
 				Chat({message:response.result.fulfillment.messages[0].payload.speech, employee:req.body.user, messageType:1, isCreated:Date.now()}).save()
 				if(response.result.fulfillment.messages[0].payload.quickreplies){
 					if(typeof(response.result.fulfillment.messages[0].payload.quickreplies) == 'object'){
@@ -242,14 +242,14 @@ function callapiai(msg, body, req, res){
 				Chat({message:response.result.fulfillment.messages[1].speech, employee:req.body.user, messageType:1, isCreated:Date.now()}).save()
 			}
 		}else{
-			console.log("m herererere")
+			//console.log("m herererere")
 			res.jsonp({msg:response.result.fulfillment.speech, /*context:response.result.contexts[0].name,*/ intent: response.result.metadata.intentName});
 			Chat({message:response.result.fulfillment.speech, employee:req.body.user, messageType:1, isCreated:Date.now()}).save()
 		}	    
 	});
 
 	request.on('error', function(error) {
-	    console.log(error);
+	    //console.log(error);
 	});
 
 	request.end();
@@ -274,7 +274,7 @@ function abc(req,res,next){
 
 router.post('/abc', function(req,res,next){	
 	var query={isDeleted:0};
-	console.log("req.body.result.parameters",req.body.result.parameters)
+	//console.log("req.body.result.parameters",req.body.result.parameters)
 	if(req.body.result.parameters.upcoming){
 		query.startDate={'$gt':Date.now()};
 	}

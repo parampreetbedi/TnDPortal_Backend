@@ -10,7 +10,7 @@ var User = require('./../models/users')
 
 
 exports.login = function(req, res, next) {
-	console.log("req.body",req.body);
+	//console.log("req.body",req.body);
 	if(req.body.email && req.body.password){
 		User.findOne({email:req.body.email,password:req.body.password}).exec(function(err,user){
 			if(err){

@@ -24,7 +24,7 @@ exports.save = function(req, res){
 exports.update = function(req, res){
 	if(req.body.plan || req.body.trainee || req.isDeleted){	
 		Enrollment.findOne({_id:req.params.enroll}).exec(function(err,enroll){
-			console.log("enroll",enroll,req.isDeleted);
+			//console.log("enroll",enroll,req.isDeleted);
 			if(err){
 				res.status(404).jsonp(err);
 			}else{
@@ -70,7 +70,7 @@ exports.enroll_in = function(req,res){
 							//plan.save(function(err4,savePlan){
 								//if(!err4){
 									Employee.findOne({_id:enrollment.trainee._id}).exec(function(err,emp){
-										console.log("emp",emp)
+										//console.log("emp",emp)
 										if(!err){
 											if(emp){
 												let transporter = nodemailer.createTransport({
@@ -91,7 +91,7 @@ exports.enroll_in = function(req,res){
 											        text: 'You have been successfully enrolled for '+plan.tech.name+' training.', // plain text body
 											        html: '<b>You have been successfully enrolled for '+plan.tech.name+' training.</b>' // html body
 											    };
-											    console.log(mailOptions)
+											    //console.log(mailOptions)
 											    // send mail with defined transport object
 											    transporter.sendMail(mailOptions, (error, info) => {
 											        if (error) {

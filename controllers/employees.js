@@ -1,7 +1,7 @@
 var Employee = require('../models/employee');
 
 exports.save = function(req, res){
-	console.log("====>>",req.body);
+	//console.log("====>>",req.body);
 	if(req.body.name && req.body.dept && req.body.email && req.body.designation){
 		var emp = {
 			name:req.body.name,

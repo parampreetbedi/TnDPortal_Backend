@@ -7,7 +7,8 @@ var Plan =  require('../controllers/plans')
 router.get('/:all', Plan.fetch);
 router.post('/', Plan.save);
 router.put('/:plan', Plan.update);
-router.patch('/:id', Plan.enroll);
+router.patch('/:id', Plan.enrollStartComplete);
+router.patch('/');
 router.delete('/:plan', function(req,res,next){
 	req.isDeleted = 1;
 	next();

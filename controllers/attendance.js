@@ -21,7 +21,7 @@ exports.save = function(req, res){
 exports.fetch = function(req, res){
     if(req.params.all=='all'){
         Attendance.find().exec(function(err, atnd){
-            console.log(atnd);
+            //console.log(atnd);
             if(err){
                 res.status(404).jsonp(err)
             }else{
@@ -30,7 +30,7 @@ exports.fetch = function(req, res){
         }) 
     }else if(req.params.all){
         Attendance.findOne({_id:req.params.all}).exec(function(err, atnd){
-            console.log(atnd);
+            //console.log(atnd);
             if(err){
                 res.status(404).jsonp(err)
             }else{
