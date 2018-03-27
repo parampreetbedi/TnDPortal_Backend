@@ -8,9 +8,9 @@ router.get('/:all', Plan.fetch);
 router.post('/', Plan.save);
 router.put('/:plan', Plan.update);
 router.patch('/:id', Plan.enrollStartComplete);
-router.patch('/');
+router.patch('/',Plan.enrollStartComplete);
 router.delete('/:plan', function(req,res,next){
-	req.isDeleted = 1;
+	req.body.isDeleted = 1;
 	next();
 },Plan.update);
 

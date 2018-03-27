@@ -7,5 +7,9 @@ var TrainedEmployee =  require('../controllers/trainedEmployee')
 router.get('/:all', TrainedEmployee.fetch);
 router.put('/:all',TrainedEmployee.update)
 router.post('/', TrainedEmployee.save);
+router.delete('/:all', function(req,res,next){
+	req.body.isDeleted = 1;
+	next();
+},TrainedEmployee.update);
 
 module.exports = router;

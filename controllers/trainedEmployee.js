@@ -9,7 +9,8 @@ exports.save = function (req, res) {
 		var trainingData = {
 			plan: req.body.plan,
 			trainee: req.body.trainee,
-			trainingCompleted: req.body.trainingCompleted
+			trainingCompleted: req.body.trainingCompleted,
+			isDeleted:0
 		}
 		TrainedEmployee(trainingData).save(function (err) {
 			if (!err) {
@@ -89,7 +90,7 @@ exports.addRatingFeedback = function (req, res) {
 
 exports.fetch = function (req, res) {
 	if (req.params.all == 'all') {
-		TrainedEmployee.find().populate('trainee', 'name').populate({
+		TrainedEmployee.find({isDeleted:0}).populate('trainee', 'name').populate({
 			path: 'plan',
 			select: 'tech',
 			populate: {					//multilevel populate
@@ -129,6 +130,25 @@ exports.update = function (req, res) {
 			}
 			if(req.body.feedback){
 				trainedEmp.feedback = req.body.feedback;	
+			}
+			if (req.body.isDeleted) {
+				trainedEmp.isDeleted = req.body.isDeleted;
+			}
+			trainedEmp.save((err) => {
+				if(!err){
+					if(req.isDeleted){
+						res.status(200).jsonp({"msg":"Plan deleted"});
+					}else{
+						res.status(200).jsonp({"msg":"Plan updated"});	
+					}						
+				}else{
+					res.status(404).jsonp(err);
+				}
+			})
+		}
+		else if(req.body.isDeleted == 1){
+			if (req.body.isDeleted) {
+				trainedEmp.isDeleted = req.body.isDeleted;
 			}
 			trainedEmp.save((err) => {
 				if(!err){

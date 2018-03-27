@@ -3,16 +3,16 @@ var TrainedEmployee = require('../models/trainedEmployee');
 
 exports.save = function (req, res) {
 
-	if (req.body.tech && req.body.startDate && req.body.trainer) {
+	if(req.body.tech && req.body.startDate && req.body.trainer){	
 		var startDate = new Date(req.body.startDate);
 		var plan = {
 			tech: req.body.tech,
-			startDate: startDate.getTime(),      //?
+			startDate: startDate.getTime(),      
 			trainer: req.body.trainer,
 			isDeleted: 0,
-			isCompleted: 2,
-			endDate: 0,							//?
-			type: 1,
+			isCompleted: req.body.isCompleted? req.body.isCompleted:2,
+			endDate: req.body.endDate? new Date(req.body.endDate).getTime():0,
+			type: req.body.type? req.body.type:0,						//i.e. need
 			generatedBy: 'current user',         // add current user here receive from request its objectid
 			generatedDate: new Date()
 		}
@@ -20,33 +20,18 @@ exports.save = function (req, res) {
 			if (!err) {
 				res.status(200).jsonp({ "msg": "Records saved successfully" });
 			}
-		})
-	}
-	else if (req.body.tech && req.body.startDate && !req.body.trainer) {
-		var startDate = new Date(req.body.startDate);
-		var plan = {
-			tech: req.body.tech,
-			startDate: startDate.getTime(),      //?
-			isDeleted: 0,
-			isCompleted: 2,
-			endDate: 0,							//?
-			type: 0,
-			generatedBy: 'current user',         // add current user here receive from request its objectid
-			generatedDate: new Date()
-		}
-		Plan(plan).save(function (err) {
-			if (!err) {
-				res.status(200).jsonp({ "msg": "Records saved successfully" });
+			else{
+				res.status(404).jsonp({"err":JSON.stringify(err)});
 			}
-		})
+		})	
 	}
 	else {
-		res.status(404).jsonp({ msg: "tech, trainer and startDate are all required inputs" })
+		res.status(404).jsonp({ msg: "tech trainer and startDate are all required inputs" })
 	}
 }
 
 exports.update = function (req, res) {
-	if (req.body.tech || req.body.startDate || (req.body.isCompleted == 0 || req.body.isCompleted == 1 || req.body.isCompleted == 2) || req.body.trainer || req.isDeleted) {
+	if (req.body.tech || req.body.startDate || req.body.endDate || req.body.trainer || req.body.type || req.body.isDeleted || (req.body.isCompleted == 0 || req.body.isCompleted == 1 || req.body.isCompleted == 2)) {
 		Plan.findOne({ _id: req.params.plan }).exec(function (err, plan) {
 			if (err) {
 				res.status(404).jsonp(err);
@@ -60,6 +45,10 @@ exports.update = function (req, res) {
 					var startDate = new Date(req.body.startDate);
 					plan.startDate = startDate.getTime();
 				}
+				if (req.body.endDate) {
+					var endDate = new Date(req.body.endDate);
+					plan.endDate = endDate.getTime();
+				}
 				if (req.body.trainer) {
 					plan.trainer = req.body.trainer;
 				}
@@ -69,12 +58,11 @@ exports.update = function (req, res) {
 				// if(req.body.trainee){                    //trainee data must be separately updated
 				// 	plan.trainee = req.body.trainee
 				// }
-				if (req.isDeleted) {
-					plan.isDeleted = req.isDeleted;
+				if (req.body.isDeleted) {
+					plan.isDeleted = req.body.isDeleted;
 				}
 				if (req.body.isCompleted == 0 || req.body.isCompleted == 1 || req.body.isCompleted == 2) {
 					plan.isCompleted = req.body.isCompleted;
-					plan.endDate = Date.now();
 				}
 				plan.save(function (err) {
 					if (!err) {
@@ -151,8 +139,8 @@ exports.fetch = function (req, res) {
 }
 
 exports.enrollStartComplete = function (req, res) {
-	if (req.body.action == 'enroll') {
-		Plan.findOne({ _id: req.params.id }).exec(function (err, plan) {
+	if (req.query.action == 'enroll') {
+		Plan.findOne({ _id: req.query.id }).exec(function (err, plan) {
 			plan.type = 1;
 			plan.save(function (err) {
 				if (!err) {
