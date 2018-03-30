@@ -3,11 +3,11 @@ var TrainedEmployee = require('../models/trainedEmployee');
 
 exports.save = function (req, res) {
 
-	if(req.body.tech && req.body.startDate && req.body.trainer){	
+	if(req.body.tech && req.body.startDate && req.body.trainer){
 		var startDate = new Date(req.body.startDate);
 		var plan = {
 			tech: req.body.tech,
-			startDate: startDate.getTime(),      
+			startDate: startDate.getTime(),
 			trainer: req.body.trainer,
 			isDeleted: 0,
 			isCompleted: req.body.isCompleted? req.body.isCompleted:2,
@@ -16,14 +16,14 @@ exports.save = function (req, res) {
 			generatedBy: 'current user',         // add current user here receive from request its objectid
 			generatedDate: new Date()
 		}
-		Plan(plan).save(function (err) {
+		Plan(plan).save(function (err, plan) {
 			if (!err) {
-				res.status(200).jsonp({ "msg": "Records saved successfully" });
+				res.status(200).jsonp(plan);
 			}
 			else{
 				res.status(404).jsonp({"err":JSON.stringify(err)});
 			}
-		})	
+		})
 	}
 	else {
 		res.status(404).jsonp({ msg: "tech trainer and startDate are all required inputs" })

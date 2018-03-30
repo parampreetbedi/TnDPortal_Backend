@@ -14,13 +14,13 @@ exports.save = function (req, res) {
 		}
 		TrainedEmployee(trainingData).save(function (err) {
 			if (!err) {
-				//res.status(200).jsonp({ "msg": "Records saved successfully" });
-			
+
 				Employee.findOne({_id:req.body.trainee}).exec(function(err,emp){
-					//console.log("emp",emp)
 					if(!err){
+
 						Plan.findOne({_id:req.body.plan}).populate('tech','name').exec((err, plan) => {
 							if(emp){
+
 								let transporter = nodemailer.createTransport({
 									host: 'mail.smartdatainc.net',
 									port: 587,
@@ -39,7 +39,7 @@ exports.save = function (req, res) {
 									text: 'You have been successfully enrolled for '+plan.tech.name+' training.', // plain text body
 									html: '<b>You have been successfully enrolled for '+plan.tech.name+' training.</b>' // html body
 								};
-								console.log(mailOptions)
+								// console.log(mailOptions)
 								// send mail with defined transport object
 								transporter.sendMail(mailOptions, (error, info) => {
 									if (error) {
