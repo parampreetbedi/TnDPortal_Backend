@@ -67,8 +67,8 @@ exports.save = function (req, res) {
 
 exports.addRatingFeedback = function (req, res) {
 
-	if (req.body._id && (req.body.starRating || req.body.feedback)) {
-		TrainedEmployee.findOne({ _id: req.body._id }, function (err, tData) {
+	if (req.body.trainee && (req.body.starRating || req.body.feedback)) {
+		TrainedEmployee.findOne({ plan: req.body.trainee }, function (err, tData) {
 			if (err) {
 				res.status(404).jsonp(err);
 			} else {
@@ -89,7 +89,20 @@ exports.addRatingFeedback = function (req, res) {
 }
 
 exports.fetch = function (req, res) {
-	if (req.params.all == 'all') {
+	if(req.query.plan){
+		TrainedEmployee.find({isDeleted:0, plan:req.query.plan}).exec((err, trainedEmp) => {
+			var list = [];
+			trainedEmp.forEach((te) => {
+				list.push(te.trainee);
+			});
+			if (err) {
+				res.status(404).jsonp(err)
+			} else {
+				res.status(200).jsonp(list)
+			}
+		})
+	}
+	else if (req.params.all == 'all') {
 		TrainedEmployee.find({isDeleted:0}).populate('trainee', 'name').populate({
 			path: 'plan',
 			select: 'tech',

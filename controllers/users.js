@@ -16,7 +16,7 @@ exports.login = function(req, res, next) {
 			if(err){
 				res.status(401).jsonp({"msg":err});	
 			}else if(user){
-				res.status(200).jsonp({"data":user._id,"msg":""});
+				res.status(200).jsonp({"data":user._id,"email":user.email});
 			}else{
 				res.status(401).jsonp({"msg":"Email and password do not match"});	
 			}
