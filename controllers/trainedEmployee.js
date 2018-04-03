@@ -5,7 +5,8 @@ const nodemailer = require('nodemailer');
 
 exports.save = function (req, res) {
 
-	if (req.body.trainee && req.body.plan && req.body.trainingCompleted) {
+	if (req.body.trainee && req.body.plan && (req.body.trainingCompleted == 0 ||
+		req.body.trainingCompleted == 1 || req.body.trainingCompleted == 2 || req.body.trainingCompleted == 3)) {
 		var trainingData = {
 			plan: req.body.plan,
 			trainee: req.body.trainee,
@@ -111,7 +112,6 @@ exports.fetch = function (req, res) {
 				select: 'name'
 			}
 		}).exec(function (err, trainedEmp) {
-			//console.log(trainedEmp);
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
@@ -149,27 +149,21 @@ exports.update = function (req, res) {
 			}
 			trainedEmp.save((err) => {
 				if(!err){
-					if(req.isDeleted){
+					if(req.body.isDeleted){
 						res.status(200).jsonp({"msg":"Plan deleted"});
 					}else{
 						res.status(200).jsonp({"msg":"Plan updated"});	
-					}						
+					}
 				}else{
 					res.status(404).jsonp(err);
 				}
 			})
 		}
 		else if(req.body.isDeleted == 1){
-			if (req.body.isDeleted) {
-				trainedEmp.isDeleted = req.body.isDeleted;
-			}
+			trainedEmp.isDeleted = req.body.isDeleted;
 			trainedEmp.save((err) => {
-				if(!err){
-					if(req.isDeleted){
-						res.status(200).jsonp({"msg":"Plan deleted"});
-					}else{
-						res.status(200).jsonp({"msg":"Plan updated"});	
-					}						
+				if(!err){					
+					res.status(200).jsonp({"msg":"Plan deleted"});					
 				}else{
 					res.status(404).jsonp(err);
 				}
@@ -178,5 +172,18 @@ exports.update = function (req, res) {
 		else{
 			res.status(404).jsonp({msg:"trainingCompleted, plan or trainee, either is required input "+JSON.stringify(req.body)})
 		}
+	})
+}
+
+exports.delete = function (req, res) {
+	TrainedEmployee.findOne({isDeleted:0, plan:req.query.plan, trainee:req.query.trainee}, (err, trainedEmp) => {
+		trainedEmp.isDeleted = 1;
+		trainedEmp.save((err) => {
+			if(!err){
+				res.status(200).jsonp({"msg":"TrainedEmployee deleted"});
+			}else{
+				res.status(404).jsonp(err);
+			}
+		})
 	})
 }

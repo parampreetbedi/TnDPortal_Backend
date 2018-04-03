@@ -66,10 +66,10 @@ exports.update = function (req, res) {
 				}
 				plan.save(function (err) {
 					if (!err) {
-						if (req.isDeleted) {
-							res.status(200).jsonp({ "msg": "Plan deleted" });
+						if (req.body.isDeleted) {
+							res.status(200).jsonp(plan);
 						} else {
-							res.status(200).jsonp({ "msg": "Plan updated" });
+							res.status(200).jsonp(plan);
 						}
 					} else {
 						res.status(404).jsonp(err);

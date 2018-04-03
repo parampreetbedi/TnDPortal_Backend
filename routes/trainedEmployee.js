@@ -13,5 +13,6 @@ router.delete('/:all', function(req,res,next){
 	next();
 },TrainedEmployee.update);
 router.patch('/', TrainedEmployee.addRatingFeedback);
+router.delete('/', TrainedEmployee.delete);
 
 module.exports = router;
