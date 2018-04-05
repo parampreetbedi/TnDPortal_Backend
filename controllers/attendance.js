@@ -22,11 +22,12 @@ exports.save = function(req, res){
 }
 
 exports.fetch = function(req, res){
-    if(req.params.all=='all'){
-        Attendance.find().populate('','').populate('','').exec(function(err, atnd){
+    if(req.query.plan){
+        Attendance.find({plan:req.query.plan}).populate('traineesPresent', 'name').exec(function(err, atnd){
             if(err){
                 res.status(404).jsonp(err)
             }else{
+                console.log("data is here===>",atnd);
                 res.status(200).jsonp(atnd)
             }
         }) 

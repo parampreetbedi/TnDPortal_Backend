@@ -5,6 +5,7 @@ var Attendance =  require('../controllers/attendance')
 
 /* GET attendance listing. */
 router.get('/:all', Attendance.fetch);
+router.get('/', Attendance.fetch);
 //router.put('/:all',Attendance.update)
 router.post('/', Attendance.save);
 
