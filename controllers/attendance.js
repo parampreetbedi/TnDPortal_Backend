@@ -21,13 +21,33 @@ exports.save = function(req, res){
 	}
 }
 
+exports.update = function(req, res){
+    Attendance.findOne({ _id:req.params.all }).exec((err, atnd) => {
+        if(req.body.plan && req.body.classDate && (req.body.classConducted==0 || req.body.classConducted==1) && req.body.traineesPresent){
+            atnd.date = req.body.classDate;
+            atnd.classConducted = req.body.classConducted;
+            atnd.traineesPresent = req.body.traineesPresent;
+
+            atnd.save((err) => {
+                if(!err){
+                    res.status(200).jsonp({"msg":"Records saved successfully"});
+                }
+                else{
+                    res.status(404).jsonp(err);
+                }
+            })
+        }else{
+            res.status(404).jsonp({msg:"plan, date, classConducted and traineesPresent are all required inputs"})
+        }
+    })
+}
+
 exports.fetch = function(req, res){
     if(req.query.plan){
         Attendance.find({plan:req.query.plan}).populate('traineesPresent', 'name').exec(function(err, atnd){
             if(err){
                 res.status(404).jsonp(err)
             }else{
-                console.log("data is here===>",atnd);
                 res.status(200).jsonp(atnd)
             }
         }) 
