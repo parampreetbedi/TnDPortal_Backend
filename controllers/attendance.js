@@ -43,14 +43,30 @@ exports.update = function(req, res){
 }
 
 exports.fetch = function(req, res){
-    if(req.query.plan){
-        Attendance.find({plan:req.query.plan}).populate('traineesPresent', 'name').exec(function(err, atnd){
+    if(req.query.plan && !req.query.trainee && !req.query.classConducted){
+        Attendance.find({plan:req.query.plan}).populate('traineesPresent','name').exec(function(err,atnd){
             if(err){
                 res.status(404).jsonp(err)
             }else{
                 res.status(200).jsonp(atnd)
             }
-        }) 
+        })
+    }else if(req.query.plan && !req.query.trainee && req.query.classConducted){
+        Attendance.find({plan:req.query.plan, classConducted:0}).populate('traineesPresent','name').exec(function(err,atnd){
+            if(err){
+                res.status(404).jsonp(err)
+            }else{
+                res.status(200).jsonp(atnd)
+            }
+        })
+    }else if(req.query.plan && req.query.trainee){
+        Attendance.find({plan:req.query.plan, traineesPresent:req.query.trainee}).populate('traineesPresent','name').exec(function(err,atnd){
+            if(err){
+                res.status(404).jsonp(err)
+            }else{
+                res.status(200).jsonp(atnd)
+            }
+        })
     }else if(req.params.all){
         Attendance.findOne({_id:req.params.all}).exec(function(err, atnd){
             if(err){
@@ -62,5 +78,4 @@ exports.fetch = function(req, res){
     }else{
         res.status(404).jsonp({msg:"a parameter is required"})
     }
-
 }

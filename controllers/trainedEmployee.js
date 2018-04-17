@@ -91,15 +91,18 @@ exports.addRatingFeedback = function (req, res) {
 
 exports.fetch = function (req, res) {
 	if(req.query.plan){
-		TrainedEmployee.find({isDeleted:0, plan:req.query.plan}).exec((err, trainedEmp) => {
-			var list = [];
-			trainedEmp.forEach((te) => {
-				list.push(te.trainee);
-			});
+		TrainedEmployee.find({isDeleted:0, plan:req.query.plan}).populate('trainee', 'name').exec((err, trainedEmp) => {
+			if(!req.query.data){
+				var list = [];
+				trainedEmp.forEach((te) => {
+					list.push(te.trainee._id);
+				});
+				trainedEmp = list;
+			}
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
-				res.status(200).jsonp(list)
+				res.status(200).jsonp(trainedEmp)
 			}
 		})
 	}

@@ -92,6 +92,15 @@ exports.fetch = function (req, res) {
 			}
 		})
 	}
+	else if (req.params.all == 'attendance') {
+		Plan.find({ isDeleted: { $ne: 1 }, type:1, isCompleted:{ $in:[0, 1] }}).populate('trainer tech', 'name').exec(function (err, plan) {
+			if (err) {
+				res.status(404).jsonp(err)
+			} else {
+				res.status(200).jsonp(plan)
+			}
+		})
+	}
 	else if (req.params.all == 'need') {
 		Plan.find({ isDeleted: { $ne: 1 }, type: 0 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech', 'name').exec(function (err, plan) {
 			if (err) {
