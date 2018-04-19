@@ -14,7 +14,7 @@ exports.save = function (req, res) {
 			endDate: req.body.endDate? new Date(req.body.endDate).getTime():0,
 			type: req.body.type? req.body.type:0,						//i.e. need
 			generatedBy: 'current user',         // add current user here receive from request its objectid
-			generatedDate: new Date()
+			generatedDate: new Date().getTime()
 		}
 		Plan(plan).save(function (err, plan) {
 			if (!err) {
@@ -42,12 +42,10 @@ exports.update = function (req, res) {
 					plan.tech = req.body.tech;
 				}
 				if (req.body.startDate) {
-					var startDate = new Date(req.body.startDate);
-					plan.startDate = startDate.getTime();
+					plan.startDate = new Date(req.body.startDate).getTime();
 				}
 				if (req.body.endDate) {
-					var endDate = new Date(req.body.endDate);
-					plan.endDate = endDate.getTime();
+					plan.endDate = new Date(req.body.endDate).getTime();
 				}
 				if (req.body.trainer) {
 					plan.trainer = req.body.trainer;
@@ -55,11 +53,11 @@ exports.update = function (req, res) {
 				if (req.body.type) {
 					plan.type = req.body.type;
 				}
-				// if(req.body.trainee){                    //trainee data must be separately updated
-				// 	plan.trainee = req.body.trainee
-				// }
 				if (req.body.isDeleted) {
 					plan.isDeleted = req.body.isDeleted;
+				}
+				if (req.body.generatedDate) {
+					plan.generatedDate = new Date(req.body.generatedDate).getTime();
 				}
 				if (req.body.isCompleted == 0 || req.body.isCompleted == 1 || req.body.isCompleted == 2) {
 					plan.isCompleted = req.body.isCompleted;

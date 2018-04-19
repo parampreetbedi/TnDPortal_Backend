@@ -9,8 +9,8 @@ var mongoose = require('mongoose'),
 var PlanSchema = new Schema({
     tech:{ type: Schema.Types.ObjectId, ref: 'Technology'},
     type:{ type:Number}, // 0 is Need, 1 is Training-Plan
-	startDate:{type:Number},                                            //? why number why not date
-	endDate:{type:Number},                                              //?
+	startDate:{type:Number},
+	endDate:{type:Number},
     trainer:{ type: Schema.Types.ObjectId, ref: 'Employee'},
     //trainee:[{ type: Schema.Types.ObjectId, ref: 'Employee'}],
     generatedBy:{ type: Schema.Types.ObjectId, ref: 'Employee'},
