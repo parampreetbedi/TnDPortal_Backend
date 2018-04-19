@@ -84,7 +84,7 @@ exports.update = function (req, res) {
 
 exports.fetch = function (req, res) {
 	if (req.params.all == 'all') {
-		Plan.find({ isDeleted: { $ne: 1 }/*, type:1*/ }).populate('trainer tech', 'name').exec(function (err, plan) {
+		Plan.find({ isDeleted: { $ne: 1 } }).populate('trainer tech', 'name').exec(function (err, plan) {
 			if (err) {
 				res.status(404).jsonp(err)	//trainer trainee tech
 			} else {
@@ -102,7 +102,7 @@ exports.fetch = function (req, res) {
 		})
 	}
 	else if (req.params.all == 'need') {
-		Plan.find({ isDeleted: { $ne: 1 }, type: 0 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech', 'name').exec(function (err, plan) {
+		Plan.find({ isDeleted: { $ne: 1 }, type: 0 }).populate('trainer tech', 'name').exec(function (err, plan) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
@@ -111,7 +111,7 @@ exports.fetch = function (req, res) {
 		})
 	}
 	else if (req.params.all == 'ongoing') {
-		Plan.find({ isDeleted: { $ne: 1 }, type: 1, isCompleted: 0 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech', 'name').exec(function (err, plan) {
+		Plan.find({ isDeleted: { $ne: 1 }, type: 1, isCompleted: 0 }).populate('trainer tech', 'name').exec(function (err, plan) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
@@ -119,7 +119,7 @@ exports.fetch = function (req, res) {
 			}
 		})
 	} else if (req.params.all == 'completed') {
-		Plan.find({ isDeleted: { $ne: 1 }, type: 1, isCompleted: 1 /*, startDate:{$lte:Date.now()}*/ }).populate('trainer tech', 'name').exec(function (err, plan) {
+		Plan.find({ isDeleted: { $ne: 1 }, type: 1, isCompleted: 1 }).populate('trainer tech', 'name').exec(function (err, plan) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
@@ -127,7 +127,7 @@ exports.fetch = function (req, res) {
 			}
 		})
 	} else if (req.params.all == 'upcoming') {
-		Plan.find({ isDeleted: { $ne: 1 }, type: 1, isCompleted: 2 /*, startDate:{$gt:Date.now()}*/ }).populate('trainer tech', 'name').exec(function (err, plan) {
+		Plan.find({ isDeleted: { $ne: 1 }, type: 1, isCompleted: 2 }).populate('trainer tech', 'name').exec(function (err, plan) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {

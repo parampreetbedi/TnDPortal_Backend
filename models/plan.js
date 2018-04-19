@@ -14,7 +14,7 @@ var PlanSchema = new Schema({
     trainer:{ type: Schema.Types.ObjectId, ref: 'Employee'},
     //trainee:[{ type: Schema.Types.ObjectId, ref: 'Employee'}],
     generatedBy:{ type: Schema.Types.ObjectId, ref: 'Employee'},
-    generatedDate:{ type: Date },
+    generatedDate:{ type: Number },
     isCompleted:{type:Number}, //0 is ongoing, 1 is completed, 2 is upcoming
     isDeleted:{type:Number} //0 is active, 1 is deleted	
 })
