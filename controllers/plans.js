@@ -82,7 +82,7 @@ exports.update = function (req, res) {
 
 exports.fetch = function (req, res) {
 	if (req.params.all == 'all') {
-		Plan.find({ isDeleted: { $ne: 1 } }).populate('trainer tech', 'name').exec(function (err, plan) {
+		Plan.find({ isDeleted: { $ne: 1 } }).populate('tech', 'name').exec(function (err, plan) {
 			if (err) {
 				res.status(404).jsonp(err)	//trainer trainee tech
 			} else {
@@ -133,7 +133,7 @@ exports.fetch = function (req, res) {
 			}
 		})
 	} else if (req.params.all) {
-		Plan.findOne({ _id: req.params.all, isDeleted: { $ne: 1 } }).populate('trainer tech').exec(function (err, plan) {
+		Plan.findOne({ _id: req.params.all, isDeleted: { $ne: 1 } }).populate('tech').exec(function (err, plan) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {

@@ -91,11 +91,11 @@ exports.addRatingFeedback = function (req, res) {
 
 exports.fetch = function (req, res) {
 	if(req.query.plan){
-		TrainedEmployee.find({isDeleted:0, trainingCompleted:{ $ne:3 }, plan:req.query.plan}).populate('trainee', 'name').exec((err, trainedEmp) => {
+		TrainedEmployee.find({isDeleted:0, trainingCompleted:{ $ne:3 }, plan:req.query.plan})/*.populate('trainee', 'name')*/.exec((err, trainedEmp) => {
 			if(!req.query.data){
 				var list = [];
 				trainedEmp.forEach((te) => {
-					list.push(te.trainee._id);
+					list.push(te.trainee);
 				});
 				trainedEmp = list;
 			}

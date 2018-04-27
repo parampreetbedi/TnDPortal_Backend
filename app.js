@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var fs = require('fs')
-var Utils = require('util')
+var cors = require('cors')
 
 var index = require('./routes/index');
 var technology = require('./routes/technology');
@@ -16,7 +16,7 @@ var enrollment = require('./routes/enrollment');
 var users = require('./routes/users');
 var attendance = require('./routes/attendance');
 var trainedEmployee = require('./routes/trainedEmployee');
-var cors = require('cors')
+
 var app = express();
 app.use(cors());
 var db = mongoose.connect('mongodb://localhost:27017/tnd');
