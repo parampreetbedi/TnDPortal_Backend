@@ -47,7 +47,7 @@ exports.update = function(req, res){
 
 exports.fetch = function(req, res){
     if(req.query.plan && !req.query.trainee && !req.query.classConducted){
-        Attendance.find({plan:req.query.plan}).populate('traineesPresent','name').populate('traineesAbsent','name').exec(function(err,atnd){
+        Attendance.find({plan:req.query.plan})./*populate('traineesPresent','name').populate('traineesAbsent','name').*/exec(function(err,atnd){
             if(err){
                 res.status(404).jsonp(err)
             }else{
@@ -63,16 +63,16 @@ exports.fetch = function(req, res){
             }
         })
     }else if(req.query.plan && req.query.trainee){
-        Attendance.find({plan:req.query.plan}).sort({date:1}).populate('traineesPresent','name').populate('traineesAbsent','name').exec(function(err,atnd){
+        Attendance.find({plan:req.query.plan}).sort({date:1})/*.populate('traineesPresent','name').populate('traineesAbsent','name')*/.exec(function(err,atnd){
             var attRec = [];
             atnd.forEach(record => {
                 var presentTrainees = [];
                 record.traineesPresent.forEach(obj =>{
-                    presentTrainees.push(obj.id)
+                    presentTrainees.push(obj.toString())
                 })
                 var absentTrainees = [];
                 record.traineesAbsent.forEach(obj =>{
-                    absentTrainees.push(obj.id)
+                    absentTrainees.push(obj.toString())
                 })
                 var present = _.contains(presentTrainees,req.query.trainee);
                 if(present){

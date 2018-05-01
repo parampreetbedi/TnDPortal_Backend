@@ -2,6 +2,7 @@ var TrainedEmployee = require('../models/trainedEmployee');
 var Employee = require('../models/employee');
 var Plan = require('../models/plan');
 const nodemailer = require('nodemailer');
+var request = require('request');
 
 exports.save = function (req, res) {
 
@@ -15,13 +16,11 @@ exports.save = function (req, res) {
 		}
 		TrainedEmployee(trainingData).save(function (err) {
 			if (!err) {
-
-				Employee.findOne({_id:req.body.trainee}).exec(function(err,emp){
-					if(!err){
-
+				request('http://localhost:3009/employees/empDetailBriefId/'+req.body.trainee, function (error, response, body) {
+					var emp = JSON.parse(body);					
+					if(!error){	
 						Plan.findOne({_id:req.body.plan}).populate('tech','name').exec((err, plan) => {
-							if(emp){
-
+							if(emp){	
 								let transporter = nodemailer.createTransport({
 									host: 'mail.smartdatainc.net',
 									port: 587,
@@ -35,7 +34,7 @@ exports.save = function (req, res) {
 								// setup email data with unicode symbols
 								let mailOptions = {
 									from: '"Amit" <chhangani.amit@gmail.com>', // sender address
-									to: emp.email,//"chhangani.amit@gmail.com",//enrollment.trainee.email, // list of receivers
+									to: emp.fld_empEmail,//"chhangani.amit@gmail.com",//enrollment.trainee.email, // list of receivers
 									subject: 'Enrolled for the '+plan.tech.name+' training', // Subject line
 									text: 'You have been successfully enrolled for '+plan.tech.name+' training.', // plain text body
 									html: '<b>You have been successfully enrolled for '+plan.tech.name+' training.</b>' // html body
@@ -54,14 +53,14 @@ exports.save = function (req, res) {
 									// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 								});
 							}
-						})							
+						})
 					}
 				})
 				res.send({msg:"successfully Enrolled"});
 			}
 			else {
 				res.status(404).jsonp({ msg: "trainee and plan are all required inputs" })
-			}	
+			}
 		})
 	}
 }
@@ -85,8 +84,13 @@ exports.addRatingFeedback = function (req, res) {
 			}
 		})
 	} else {
-		res.status(404).jsonp({ msg: "trainee and plan are all required inputs" })
+		res.status(404).jsonp({ msg: "required inputs are not provided" })
 	}
+}
+
+exports.viewRatingFeedback = function (req, res) {
+
+	
 }
 
 exports.fetch = function (req, res) {
@@ -107,7 +111,7 @@ exports.fetch = function (req, res) {
 		})
 	}
 	else if (req.params.all == 'all') {
-		TrainedEmployee.find({isDeleted:0}).populate('trainee', 'name').populate({
+		TrainedEmployee.find({isDeleted:0})/*.populate('trainee', 'name')*/.populate({
 			path: 'plan',
 			select: 'tech',
 			populate: {					//multilevel populate
@@ -122,7 +126,7 @@ exports.fetch = function (req, res) {
 			}
 		})
 	} else if (req.params.all) {
-		TrainedEmployee.findOne({ _id: req.params.all }).populate('trainee', 'name').populate('plan', 'tech').exec(function (err, trainedEmp) {
+		TrainedEmployee.findOne({ _id: req.params.all })/*.populate('trainee', 'name')*/.populate('plan', 'tech').exec(function (err, trainedEmp) {
 			if (err) {
 				res.status(404).jsonp(err)
 			} else {
